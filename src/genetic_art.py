@@ -1,13 +1,22 @@
 from PIL import Image, ImageDraw
 import numpy as np
+import random
 
 class Gene:
     def __init__(self, points, color):
         self.points = points
         self.color = color
     
-    def mutate(self):
-        pass
+    def mutate(self, mutation_rate = 0.1,max_width=256, max_height=256):
+        new_points = []
+        for (x, y) in self.points:
+            if random.random() < mutation_rate:
+                dx = random.randint(-10, 10)
+                dy = random.randint(-10, 10)
+                x = max(0, min(x + dx, max_width - 1))
+                y = max(0, min(y + dy, max_height - 1))
+            new_points.append((x, y))
+        self.points = new_points
 
 
 class Individual:
@@ -24,27 +33,14 @@ class Individual:
         return image
     
     def fitness(self):
-        target_image = Image.open("assets/mona_resized.png").convert("RGBA")
+        target_image = Image.open("../assets/mona_resized.png").convert("RGBA")
         target_array = np.array(target_image, dtype=np.int16)
-        generated_array = np.array(self.to_image, dtype=np.int16)
-        diff = target_array - generated_array
-        mse = np.mean(np.square(diff))
-        fitness_score = 1/(mse + 1e-8)
+        generated_array = np.array(self.to_image(), dtype=np.int16)
+        diff = np.abs(target_array - generated_array)
+        mse = np.mean(diff)
+        fitness_score = 1/(mse + 1)
         return fitness_score
         
-    def mutate(self):
-        pass
-    
-    
-triangle_points = [(50, 50), (200, 80), (100, 200)]
-triangle_color = (255, 0, 0, 128)  
-test_gene = Gene(triangle_points, triangle_color)
-
-
-test_individual = Individual([test_gene])
-
-
-img = test_individual.to_image()
-
-
-img.show()
+    def mutate(self, mutation_rate = 0.1):
+        for gene in self.list_gene:
+            gene.mutate(mutation_rate)
