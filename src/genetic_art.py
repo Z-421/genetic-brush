@@ -25,8 +25,8 @@ class Gene:
                 new_val = max(0, min(color + delta, 255))
             else:
                 new_val = color
-                new_colors.append(new_val)
-        self.color = tuple(new_colors)
+            new_colors.append(new_val)
+        self.colors = tuple(new_colors)
 
 
 class Individual:
