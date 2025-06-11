@@ -19,7 +19,7 @@ for generation in range(NUM_GENERATIONS):
     best_fitness = best_individual.fitness()
     print(f"🔥 Best fitness: {best_fitness}")
     
-    if generation % 10 == 0 or generation == NUM_GENERATIONS - 1:
+    if generation % 1000 == 0 or generation == NUM_GENERATIONS - 1:
         image = best_individual.to_image()
         image.save(f"../assets/results/gen_{generation:03d}.png")
     
